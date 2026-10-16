@@ -29,7 +29,7 @@ Then open <http://localhost:8000>.
 
 ```text
 /
-├── index.html                      Page shell (masthead, filters, grid, colophon)
+├── index.html                      Page shell (masthead, filters, grid)
 ├── styles.css                      Editorial theme (cream paper, serif type, masonry grid)
 ├── assets/
 │   └── locke-reads.png             Masthead banner

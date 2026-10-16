@@ -70,36 +70,6 @@ a:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-o
   width:clamp(260px,62vw,660px);
   height:auto;
 }
-.masthead-ornament{
-  margin:clamp(1rem,2.4vw,1.5rem) auto 0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:.85rem;
-  max-width:340px;
-}
-.masthead-ornament::before,
-.masthead-ornament::after{
-  content:"";
-  flex:1;
-  height:1px;
-  background:linear-gradient(90deg,transparent,var(--rule));
-}
-.masthead-ornament::after{background:linear-gradient(90deg,var(--rule),transparent)}
-.masthead-ornament .diamond{
-  flex:none;
-  width:.4em;
-  height:.4em;
-  border:1px solid var(--accent);
-  transform:rotate(45deg);
-}
-.standfirst{
-  margin:1rem auto 0;
-  max-width:52ch;
-  font-style:italic;
-  font-size:1.1rem;
-  color:var(--ink-soft);
-}
 
 .dateline{
   margin-top:clamp(1.8rem,4vw,2.6rem);
@@ -145,7 +115,7 @@ a:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-o
 
 .board{
   position:relative;
-  margin:0 auto;
+  margin:0 auto clamp(2.5rem,6vw,4rem);
 }
 .board.is-fading{opacity:0;transition:opacity .45s ease}
 .tile{
@@ -225,17 +195,6 @@ a.frame:hover img{transform:scale(1.03)}
 .notice h2{margin:0 0 .6rem;font-size:1.4rem;font-weight:500}
 .notice p{margin:.4rem 0;line-height:1.55}
 .notice .fine{font-family:var(--sans);font-size:.78rem;color:var(--ink-soft)}
-
-.colophon{
-  margin-top:clamp(3rem,7vw,4.5rem);
-  border-top:1px solid var(--ink);
-  padding:1.7rem 0 3.2rem;
-  text-align:center;
-}
-.colophon-submit{margin:0 0 .9rem;font-style:italic;font-size:1.02rem}
-.colophon .fine{margin:.3rem 0;font-family:var(--sans);font-size:.72rem;letter-spacing:.04em;color:var(--ink-soft)}
-.colophon a{text-decoration:underline;text-decoration-color:var(--rule);text-underline-offset:3px}
-.colophon a:hover{text-decoration-color:var(--accent)}
 
 @media (max-width:640px){
   .filters{gap:.3rem 1.4rem;margin-bottom:2.2rem}

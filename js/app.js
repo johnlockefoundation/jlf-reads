@@ -235,8 +235,6 @@ function initChrome() {
   if (dateLine) {
     dateLine.textContent = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(new Date());
   }
-  const year = document.getElementById("colophon-year");
-  if (year) year.textContent = String(new Date().getFullYear());
 }
 
 initChrome();
