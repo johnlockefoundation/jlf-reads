@@ -11,7 +11,9 @@ Microsoft Form
 → frontend query on page load
 ```
 
-While `DATA_SOURCE` is set to `json` (see [Frontend data layer](#frontend-data-layer)), the frontend reads a local JSON fixture instead of Supabase, which is how the site currently ships.
+While `DATA_SOURCE` is set to `json` (see [Frontend data layer](#frontend-data-layer)), the frontend reads a local JSON fixture instead of Supabase, which is how the static site currently ships.
+
+For production the same data is served by the **WordPress plugin** in [`wordpress/jlf-reading-watching/`](wordpress/jlf-reading-watching/), which queries Supabase server-side and renders complete HTML. Installation and configuration are documented in the [plugin README](wordpress/jlf-reading-watching/README.md).
 
 ## Quick start
 
@@ -30,7 +32,7 @@ Then open <http://localhost:8000>.
 ├── index.html                      Page shell (masthead, filters, grid, colophon)
 ├── styles.css                      Editorial theme (cream paper, serif type, masonry grid)
 ├── assets/
-│   └── locke-floating-head.png     Masthead emblem
+│   └── locke-reads.png             Masthead banner
 ├── js/
 │   ├── app.js                      Rendering, filtering, cover hydration
 │   ├── recommendations-data.js     Data adapter — JSON fixture or Supabase
@@ -45,6 +47,8 @@ Then open <http://localhost:8000>.
 │   ├── migrations/                 Database schema (recommendations table, RLS, storage)
 │   └── functions/
 │       └── sync-recommendation/    Edge Function synced from Microsoft Lists
+├── wordpress/
+│   └── jlf-reading-watching/       WordPress plugin: shortcode + block, server-side Supabase
 └── README.md
 ```
 
@@ -185,6 +189,18 @@ Deployed at the correct slug `sync-recommendation` — the earlier misspelled `s
 
 No scheduler runs the function. Power Automate invokes it whenever an *approved* Microsoft List item changes, passing `media_type`, `title`, `source`, `url`, `blurb`, `sink`, ordering and artwork fields, plus `source_modified_at` for staleness checks.
 
+## WordPress deployment
+
+The production front end is the plugin in `wordpress/jlf-reading-watching/`. It
+reads the same `recommendations` table through the same PostgREST endpoint, but
+server-side: the publishable key lives in `wp-config.php` rather than in page
+source, responses are cached in a transient, artwork is resolved server-side, and
+every record is server-rendered so the content is indexable.
+
+The static site above is retained for preview and as a fallback. Both consume
+identical data and ordering, so the fixture-driven `DATA_SOURCE` flag does not
+need to change for the WordPress path to be live.
+
 ## Deploying to GitHub Pages
 
 1. Create a GitHub repository and push these files to the `main` branch.
@@ -195,6 +211,7 @@ All asset and data paths are relative, so subpath hosting works unchanged.
 
 ## Deployment and rollback
 
+- **WordPress (production)** — copy the plugin directory to `wp-content/plugins/`, define the `JLF_RW_*` constants, activate. Roll back by restoring the previous plugin directory; the static site is unaffected and remains available as a fallback. Caches are flushed with `do_action( 'jlf_rw_flush_caches' )`.
 - **Frontend green** — committing to `main` redeploys GitHub Pages. Roll back by reverting the offending commit.
 - **Data path** — moving from fixture to production is a single flag change: set `DATA_SOURCE = "supabase"` in `js/recommendations-data.js` and redeploy. To roll back, revert that flag (the JSON fixture remains the previously shipped set) and redeploy.
 - **Edge Function** — roll back by redeploying the previous source with `supabase functions deploy sync-recommendation`, or delete the function (`supabase functions delete sync-recommendation`) to halt syncing entirely.
